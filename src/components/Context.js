@@ -4,6 +4,8 @@ export const DataContext = React.createContext();
 
 export class DataProvider extends Component {
 
+    //Arrays of products, cart and total variable
+    //This is the initial state of this component
     state = {
         products: [
             {
@@ -86,6 +88,12 @@ export class DataProvider extends Component {
             alert("The product has been added to cart.")
         }
     };
+    //Here, addcart arrow function has a id parameter. 
+    // in addcart we are using cart and product properties of this.state 
+    // then check passed id and every product's id whether that passed id is already available in the cart, if not check varible is true
+    // if check is true then filter the passed id product from products array and save to the data variable 
+    // then that product added to the cart array 
+    //If check if false then give user to an alert message
 
     reduction = id =>{
         const { cart } = this.state;
@@ -97,6 +105,7 @@ export class DataProvider extends Component {
         this.setState({cart: cart});
         this.getTotal();
     };
+
 
     increase = id =>{
         const { cart } = this.state;
