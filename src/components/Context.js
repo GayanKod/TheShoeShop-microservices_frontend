@@ -1,76 +1,45 @@
-import React, { Component } from 'react'
+import React, { Component,useEffect  } from 'react'
+import axios from 'axios';
 
 export const DataContext = React.createContext();
+
+
 
 export class DataProvider extends Component {
 
     //Arrays of products, cart and total variable
     //This is the initial state of this component
+    // http://theshoeshop.com:9191/api/product
+
+    componentDidMount() {
+
+        const dataCart = JSON.parse(localStorage.getItem('dataCart'));
+        if(dataCart !== null){
+            this.setState({cart: dataCart});
+        }
+        const dataTotal = JSON.parse(localStorage.getItem('dataTotal'));
+        if(dataTotal !== null){
+            this.setState({total: dataTotal});
+        }
+        // Fetch product data from the API
+        axios.get("http://theshoeshop.com:9191/api/product").then((res) => {
+            
+            console.log(res.data);
+            this.setState({ products: res.data });
+
+          }).catch((err) => {
+              console.log(err.message);
+          })
+          .catch(error => {
+            console.error('Error fetching product data:', error);
+          });
+      }
+
     state = {
-        products: [
-            {
-                "_id": "1",
-                "title": "Nike Shoes 01",
-                "src": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=80",
-                "description": "What is Lorem Ipsum?",
-                "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                "price": 23,
-                "colors": ["red", "black", "crimson", "teal"],
-                "count": 1
-            },
-            {
-                "_id": "2",
-                "title": "Nike Shoes 02",
-                "src": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=80",
-                "description": "What is Lorem Ipsum?",
-                "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                "price": 19,
-                "colors": ["red", "crimson", "teal"],
-                "count": 1
-            },
-            {
-                "_id": "3",
-                "title": "Nike Shoes 03",
-                "src": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=80",
-                "description": "What is Lorem Ipsum?",
-                "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                "price": 50,
-                "colors": ["lightblue", "white", "crimson", "teal"],
-                "count": 1
-            },
-            {
-                "_id": "4",
-                "title": "Nike Shoes 04",
-                "src": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=80",
-                "description": "What is Lorem Ipsum?",
-                "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                "price": 15,
-                "colors": ["orange", "black", "crimson", "teal"],
-                "count": 1
-            },
-            {
-                "_id": "5",
-                "title": "Nike Shoes 05",
-                "src": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=80",
-                "description": "What is Lorem Ipsum?",
-                "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                "price": 10,
-                "colors": ["orange", "black", "crimson", "teal"],
-                "count": 1
-            },
-            {
-                "_id": "6",
-                "title": "Nike Shoes 06",
-                "src": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=80",
-                "description": "What is Lorem Ipsum?",
-                "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                "price": 17,
-                "colors": ["orange", "black", "crimson", "teal"],
-                "count": 1
-            }
-        ],
+        products: [],
         cart: [],
-        total: 0
+        total: 0,
+        isLoading: true
         
     };
 
@@ -132,6 +101,11 @@ export class DataProvider extends Component {
        
     };
 
+    componentDidUpdate(){
+        localStorage.setItem('dataCart', JSON.stringify(this.state.cart))
+        localStorage.setItem('dataTotal', JSON.stringify(this.state.total))
+    };
+
     getTotal = ()=>{
         const{cart} = this.state;
         const res = cart.reduce((prev, item) => {
@@ -139,22 +113,31 @@ export class DataProvider extends Component {
         },0)
         this.setState({total: res})
     };
-    
-    componentDidUpdate(){
-        localStorage.setItem('dataCart', JSON.stringify(this.state.cart))
-        localStorage.setItem('dataTotal', JSON.stringify(this.state.total))
-    };
 
-    componentDidMount(){
-        const dataCart = JSON.parse(localStorage.getItem('dataCart'));
-        if(dataCart !== null){
-            this.setState({cart: dataCart});
-        }
-        const dataTotal = JSON.parse(localStorage.getItem('dataTotal'));
-        if(dataTotal !== null){
-            this.setState({total: dataTotal});
-        }
-    }
+    
+    // componentDidMount() {
+
+    //     const dataCart = JSON.parse(localStorage.getItem('dataCart'));
+    //     if(dataCart !== null){
+    //         this.setState({cart: dataCart});
+    //     }
+    //     const dataTotal = JSON.parse(localStorage.getItem('dataTotal'));
+    //     if(dataTotal !== null){
+    //         this.setState({total: dataTotal});
+    //     }
+    //     // Fetch product data from the API
+    //     axios.get("http://theshoeshop.com:9191/api/product").then((res) => {
+            
+    //         console.log(res.data);
+    //         this.setState({ products: res.data });
+
+    //       }).catch((err) => {
+    //           console.log(err.message);
+    //       })
+    //       .catch(error => {
+    //         console.error('Error fetching product data:', error);
+    //       });
+    //   }
    
 
     render() {
