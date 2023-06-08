@@ -46,7 +46,6 @@ export class Cart extends Component {
         
     
             }
-        console.log(cart);
         if(cart.length === 0){
             return <h2 style={{textAlign:"center"}}>Nothings Product</h2>
         }else{
