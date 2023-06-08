@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import {DataContext} from '../Context'
 import {Link} from 'react-router-dom'
 import Colors from './Colors'
@@ -12,8 +13,40 @@ export class Cart extends Component {
         this.context.getTotal();
     }
     
+    
     render() {
         const {cart,increase,reduction,removeProduct,total} = this.context;
+
+        const placeOrder = () => {
+            const orderLineItemsDTOList = cart.map(item => ({
+              skuCode: item.skuCode,
+              price: item.price,
+              qty: item.count
+            }));
+
+        // Convert the payload to a string
+        const payload = JSON.stringify({ orderLineItemsDTOList });
+
+        // Make the API request using Axios
+        axios
+        .post('http://theshoeshop.com:9191/api/order', payload, {
+            headers: {
+            'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            // Handle the response from the API
+            console.log(response);
+            alert(response.data);
+        })
+        .catch(error => {
+            // Handle any errors
+            console.log(error);
+        });
+        
+    
+            }
+        console.log(cart);
         if(cart.length === 0){
             return <h2 style={{textAlign:"center"}}>Nothings Product</h2>
         }else{
@@ -42,7 +75,7 @@ export class Cart extends Component {
                         ))
                     }
                     <div className="total">
-                        <Link to="/payment">Payment</Link>
+                        <button onClick={placeOrder}>Place the order</button>
                         <h3>Total: ${total}</h3>
                     </div>
                 </>
