@@ -114,31 +114,6 @@ export class DataProvider extends Component {
         this.setState({total: res})
     };
 
-    
-    // componentDidMount() {
-
-    //     const dataCart = JSON.parse(localStorage.getItem('dataCart'));
-    //     if(dataCart !== null){
-    //         this.setState({cart: dataCart});
-    //     }
-    //     const dataTotal = JSON.parse(localStorage.getItem('dataTotal'));
-    //     if(dataTotal !== null){
-    //         this.setState({total: dataTotal});
-    //     }
-    //     // Fetch product data from the API
-    //     axios.get("http://theshoeshop.com:9191/api/product").then((res) => {
-            
-    //         console.log(res.data);
-    //         this.setState({ products: res.data });
-
-    //       }).catch((err) => {
-    //           console.log(err.message);
-    //       })
-    //       .catch(error => {
-    //         console.error('Error fetching product data:', error);
-    //       });
-    //   }
-   
 
     render() {
         const {products, cart,total} = this.state;
