@@ -29,7 +29,7 @@ section .cart{
     align-items: center;
     justify-content: space-between;
 }
-.total a{
+.total button{
     text-decoration: none;
     background: #333;
     color: white;
