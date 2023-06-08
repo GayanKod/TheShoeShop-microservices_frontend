@@ -46,11 +46,11 @@ export class DataProvider extends Component {
     addCart = (id) =>{
         const {products, cart} = this.state;
         const check = cart.every(item =>{
-            return item._id !== id
+            return item.id !== id
         })
         if(check){
             const data = products.filter(product =>{
-                return product._id === id
+                return product.id === id
             })
             this.setState({cart: [...cart,...data]})
         }else{
@@ -67,7 +67,7 @@ export class DataProvider extends Component {
     reduction = id =>{
         const { cart } = this.state;
         cart.forEach(item =>{
-            if(item._id === id){
+            if(item.id === id){
                 item.count === 1 ? item.count = 1 : item.count -=1;
             }
         })
@@ -79,7 +79,7 @@ export class DataProvider extends Component {
     increase = id =>{
         const { cart } = this.state;
         cart.forEach(item =>{
-            if(item._id === id){
+            if(item.id === id){
                 item.count += 1;
             }
         })
@@ -91,7 +91,7 @@ export class DataProvider extends Component {
         if(window.confirm("Do you want to delete this product?")){
             const {cart} = this.state;
             cart.forEach((item, index) =>{
-                if(item._id === id){
+                if(item.id === id){
                     cart.splice(index, 1)
                 }
             })
